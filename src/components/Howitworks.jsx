@@ -19,19 +19,15 @@ const HowItWorks = () => {
           How It Works
         </h2>
       </div>
-      <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-12">
+      <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-12 ">
         {steps.map((s, i) => {
           const Icon = s.icon;
           return (
             <div
               key={i}
-              className="relative group p-8 bg-background border border-foreground rounded-none
-                         hover:translate-x-[-4px] hover:translate-y-[-4px] 
+              className="step relative group p-8 bg-background border border-foreground rounded-none
+                          
                          transition-all duration-300 ease-out overflow-hidden max-sm:w-[330px]"
-              style={{
-                boxShadow:
-                  "10px 15px 0px 0px rgba(0,0,0,.8), 20px 30px 0px 0px rgba(0,0,0,.5)",
-              }}
             >
               {/* --- Grain/Noise Overlay --- */}
               <div

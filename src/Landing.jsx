@@ -10,68 +10,64 @@ import {
   Menu,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Link } from "react-router-dom";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "./lib/supabase";
 
-import HowItWorks from "./Howitworks";
-import Pricing from "./Pricing";
-import FAQ from "./Faq";
-
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-
-// --- Configuration Arrays ---
-const NAV_LINKS = [
-  { name: "How it works", href: "#how-it-works" },
-  { name: "Pricing", href: "#pricing" },
-  { name: "FAQs", href: "#faqs" },
-];
+import HowItWorks from "./components/Howitworks";
+import Pricing from "./components/Pricing";
+import FAQ from "./components/Faq";
+import Nav from "./components/Nav";
 
 const MODES = [
   {
     id: "no",
-    label: 'The "No" Button',
+    label: "Hard Decline",
     icon: XCircle,
-    activeClass: "bg-red-500/10 border-red-500/50 text-red-500",
+    activeClass: "bg-black text-white shadow-lg",
+    description: "Firm boundaries, zero explanation.",
     draft:
-      "I appreciate the invite! I'm currently focusing on some personal priorities and won't be able to make it. Let's touch base later in the month.",
+      "I’ve reviewed the request. Given my current project load and internal commitments, I’m unable to take this on. I won't be able to provide further cycles on this for the foreseeable future. Best of luck with the initiative.",
   },
   {
     id: "boss",
-    label: "Boss Mode",
+    label: "Executive Pivot",
     icon: Briefcase,
-    activeClass: "bg-indigo-500/10 border-indigo-500/50 text-indigo-500",
+    activeClass: "bg-black text-white shadow-lg",
+    description: "High-level strategic redirection.",
     draft:
-      "I've reviewed the proposal. To ensure we meet our KPIs, I suggest we pivot the current strategy to align with the primary stakeholders' expectations.",
+      "This doesn’t currently align with our core KPIs or the primary stakeholder roadmap. We need to pause and pivot the current strategy to ensure we aren't burning resources on low-impact tasks. Let's sync once you've re-aligned with the broader vision.",
   },
   {
     id: "safe",
-    label: "Safe Lock",
+    label: "Cooling Period",
     icon: ShieldAlert,
-    activeClass: "bg-amber-500/10 border-amber-500/50 text-amber-500",
+    activeClass: "bg-black text-white shadow-lg",
+    description: "Prevent emotional or late-night sends.",
     draft:
-      "🔒 [DRAFT LOCKED]: You're currently in 'Safe Mode'. This draft is saved, but sending is disabled until 8:00 AM tomorrow.",
+      "SYSTEM NOTICE: This draft has been placed in an encrypted holding state. To maintain professional equilibrium, the 'Send' protocol is restricted until the next business cycle (08:00 AM). Review this with fresh eyes before finalizing.",
   },
 ];
 
 const Landing = () => {
-  const [input, setInput] = useState("");
-  const [output, setOutput] = useState("");
+  const [output, setOutput] = useState(
+    "I've received your proposal and appreciate the detail included. To ensure this aligns with our current roadmap and high-priority deliverables, I’ll need to run a quick internal review with the stakeholders. I expect to have a formal response and next steps for you by Tuesday. In the meantime, feel free to share any additional technical documentation.",
+  );
   const [activeModeId, setActiveModeId] = useState(null);
   const [copied, setCopied] = useState(false);
+
+  // FIX: useState returns an array [state, setState]
   const [session, setSession] = useState(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
+    const getSession = async () => {
+      const {
+        data: { session: currentSession },
+      } = await supabase.auth.getSession();
+      setSession(currentSession);
+    };
+    getSession();
 
+    // Optional: Listen for auth changes to keep it truly dynamic
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -92,131 +88,10 @@ const Landing = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-  };
-
   return (
     <div className="min-h-screen bg-background text-foreground font-sans selection:bg-indigo-500/30">
-      {/* --- Nav Bar --- */}
-      <nav className="flex items-center justify-between px-8 py-4 border-b border-foreground/30 bg-background sticky top-0 z-50">
-        <div className="flex items-center gap-2">
-          <div className="h-8 w-8 bg-foreground rounded-lg flex items-center justify-center">
-            <Zap size={22} fill="#fff" />
-          </div>
-          <span className="text-xl font-bold tracking-tight text-foreground uppercase italic">
-            Unsent.
-          </span>
-        </div>
+      <Nav />
 
-        {/* Desktop Links */}
-        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-400">
-          {NAV_LINKS.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              className="hover:text-foreground transition-colors uppercase text-xs font-medium"
-            >
-              {link.name}
-            </a>
-          ))}
-        </div>
-
-        {/* Desktop Auth */}
-        <div className="hidden md:flex items-center gap-4">
-          {session ? (
-            <div className="flex items-center gap-4">
-              <span className="font-mono text-[10px] text-zinc-500 uppercase">
-                {session.user.email}
-              </span>
-              <Button
-                variant="outline"
-                onClick={handleLogout}
-                className="rounded-none border-foreground/20 font-mono text-[10px] h-8"
-              >
-                LOGOUT
-              </Button>
-            </div>
-          ) : (
-            <Link to="/auth">
-              <Button className="bg-foreground text-background hover:bg-zinc-200 hover:text-foreground transition-all font-bold uppercase tracking-widest text-[10px] rounded-none px-6">
-                Sign Up
-              </Button>
-            </Link>
-          )}
-        </div>
-
-        {/* --- Mobile Menu Sheet --- */}
-        <div className="md:hidden">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="hover:bg-foreground/10"
-              >
-                <Menu size={24} />
-              </Button>
-            </SheetTrigger>
-            <SheetContent
-              side="right"
-              className="w-[300px] sm:w-[400px] border-l border-foreground bg-background p-0 rounded-none"
-            >
-              {/* Grain Texture Overlay in Drawer */}
-              <div
-                className="absolute inset-0 pointer-events-none opacity-[0.04] z-0"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-                }}
-              />
-
-              <div className="relative z-10 h-full flex flex-col">
-                <SheetHeader className="p-8 border-b border-foreground/10 text-left">
-                  <SheetTitle className="font-mono text-xs uppercase tracking-widest text-zinc-500 font-bold">
-                    System_Menu
-                  </SheetTitle>
-                </SheetHeader>
-
-                <div className="flex-1 flex flex-col items-start px-8 py-12 gap-8">
-                  {NAV_LINKS.map((link) => (
-                    <a
-                      key={link.name}
-                      href={link.href}
-                      className="text-lg font-bold uppercase  tracking-tighter hover:translate-x-2 transition-transform duration-200"
-                    >
-                      {link.name}
-                    </a>
-                  ))}
-                </div>
-
-                <div className="p-8 border-t border-foreground/10 bg-foreground/[0.02]">
-                  {session ? (
-                    <div className="flex flex-col gap-4">
-                      <span className="font-mono text-[10px] text-zinc-400 uppercase break-all">
-                        SESSION_USER: {session.user.email}
-                      </span>
-                      <Button
-                        onClick={handleLogout}
-                        className="w-full rounded-none border border-foreground bg-background text-foreground hover:bg-foreground hover:text-background transition-all font-mono text-[10px] uppercase font-bold py-6"
-                      >
-                        Terminate Session
-                      </Button>
-                    </div>
-                  ) : (
-                    <Link to="/auth" className="w-full">
-                      <Button className="w-full bg-foreground text-background hover:bg-zinc-200 hover:text-foreground transition-all font-bold uppercase tracking-widest text-xs rounded-none py-6">
-                        Access System
-                      </Button>
-                    </Link>
-                  )}
-                </div>
-              </div>
-            </SheetContent>
-          </Sheet>
-        </div>
-      </nav>
-
-      {/* --- Hero Section --- */}
       <main className="max-w-6xl mx-auto px-6 pt-20 pb-32 text-center">
         <div className="flex flex-col items-center justify-center gap-6 ">
           <div className="flex items-center gap-3 px-3 py-1 border border-foreground/20 bg-foreground/[0.03] rounded-full">
@@ -239,18 +114,18 @@ const Landing = () => {
             that matter.
           </p>
 
-          <button className="px-8 py-3 bg-foreground text-background hover:bg-zinc-200 hover:text-foreground mb-16 transition-all font-bold uppercase tracking-widest text-xs rounded-none border border-foreground">
-            Get Started
-          </button>
+          {/* DYNAMIC LINK FIX */}
+          <Link to={session ? "/maketext" : "/auth"}>
+            <button className="px-8 py-3 bg-foreground text-background hover:bg-zinc-200 hover:text-foreground mb-16 transition-all font-bold uppercase tracking-widest text-xs rounded-none border border-foreground">
+              Get Started
+            </button>
+          </Link>
         </div>
 
         {/* --- Main App Widget --- */}
         <div
-          className="max-w-4xl mx-auto border border-foreground rounded-xl relative overflow-hidden"
-          style={{
-            boxShadow:
-              "10px 15px 0px 0px rgba(0,0,0,.2), 20px 30px 0px 0px rgba(0,0,0,.1)",
-          }}
+          className="max-w-4xl mx-auto bg-[#F2F2F2] rounded-[48px] p-4 relative overflow-hidden"
+          style={{ boxShadow: "0 2px 5px 0px rgba(0,0,0,0.5)" }}
         >
           {/* Grain Texture Overlay */}
           <div
@@ -260,73 +135,91 @@ const Landing = () => {
             }}
           />
 
-          <div className="bg-background relative z-10 rounded-[calc(0.75rem-1px)] overflow-hidden grid md:grid-cols-2">
-            {/* Input Side */}
-            <div className="p-8 border-r border-foreground/10 text-left">
-              <h3 className="text-sm font-semibold uppercase tracking-widest text-foreground mb-4 font-mono">
-                Input Context
-              </h3>
-              <Textarea
-                placeholder="Type the vibe of your message here..."
-                className="bg-foreground/5 px-4 border-none text-xl focus-visible:ring-0 placeholder:text-foreground/40 min-h-[150px] resize-none rounded-none"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-              />
+          <div className="relative z-10 bg-white rounded-[40px] shadow-sm flex flex-col min-h-[500px]">
+            {/* --- Top Toolbar --- */}
+            <div className="p-6 flex items-center justify-between ">
+              <div className="flex items-center gap-2 bg-[#F9F9F9] border border-black/5 rounded-full px-4 py-2 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05)]">
+                <span className="text-[11px] font-bold font-mono tracking-tighter uppercase mr-2 border-r pr-2 border-black/10">
+                  Generated Text
+                </span>
+                <button className="p-1 hover:bg-black/5 rounded-md">
+                  <Zap size={14} />
+                </button>
+                <span className="h-4 w-[1px] bg-black/10 mx-1" />
+                <button className="text-xs font-bold px-2 italic max-sm:hidden">
+                  B
+                </button>
+                <button className="text-xs font-serif px-2 italic max-sm:hidden">
+                  i
+                </button>
+                <button className="p-1 hover:bg-black/5 rounded-md">
+                  <Menu size={14} />
+                </button>
+              </div>
 
-              <div className="grid grid-cols-1 gap-3 mt-6">
+              <div className="flex gap-2">
+                <button
+                  onClick={copyToClipboard}
+                  className="h-10 w-10 bg-black rounded-full flex items-center justify-center shadow-md cursor-pointer hover:scale-105 active:scale-95 transition-all"
+                >
+                  {copied ? (
+                    <Check size={18} className="text-white" />
+                  ) : (
+                    <Copy className="text-background" size={17} />
+                  )}
+                </button>
+                <div className="max-sm:hidden h-10 w-10 bg-white border border-black/10 rounded-full flex items-center justify-center shadow-sm cursor-pointer hover:bg-zinc-50 transition-colors">
+                  <ArrowRight size={18} className="rotate-[-45deg]" />
+                </div>
+              </div>
+            </div>
+
+            {/* --- Content Area --- */}
+            <div className="flex-1 px-10 max-sm:px-4 pb-32 text-left">
+              <div className="bg-foreground/5 rounded-xl p-6 max-sm:p-4 h-[250px] mt-8 border border-zinc-100 animate-in fade-in slide-in-from-bottom-4 duration-700 overflow-y-auto">
+                <p className="max-sm:text-sm text-lg leading-relaxed text-foreground font-light">
+                  {output}
+                </p>
+              </div>
+            </div>
+
+            {/* --- Floating Bottom Controls --- */}
+            <div className="absolute bottom-10 left-10 right-10 max-sm:left-4 max-sm:right-4 flex items-center justify-between">
+              {/* Mode Selection */}
+              <div className="flex items-center gap-1 bg-white border border-black/5 rounded-full p-1 shadow-xl">
                 {MODES.map((mode) => {
                   const Icon = mode.icon;
                   const isActive = activeModeId === mode.id;
                   return (
-                    <Button
+                    <button
                       key={mode.id}
                       onClick={() => handleGenerate(mode)}
-                      className={`justify-start gap-3 h-12 rounded-none text-foreground transition-all uppercase font-mono text-[10px] tracking-widest
-                        ${isActive ? mode.activeClass : "bg-foreground/5 border border-foreground/10 hover:bg-foreground/10"}`}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all
+                        ${isActive ? "bg-black text-white shadow-lg" : "bg-transparent text-zinc-400 hover:text-black hover:bg-zinc-50"}`}
                     >
-                      <Icon size={18} /> {mode.label}
-                    </Button>
+                      <Icon size={14} />
+                      <span className={isActive ? "block" : "hidden"}>
+                        {mode.label}
+                      </span>
+                    </button>
                   );
                 })}
               </div>
-            </div>
 
-            {/* Output Side */}
-            <div className="p-8 bg-background/40 text-left relative flex flex-col justify-between">
-              <div>
-                <h3 className="text-sm font-semibold uppercase tracking-widest text-foreground mb-4 flex justify-between items-center font-mono">
-                  Drafted Text
-                  {output && (
-                    <button
-                      onClick={copyToClipboard}
-                      className="hover:bg-foreground/10 p-2 rounded-none transition-colors border border-foreground/10"
-                    >
-                      {copied ? (
-                        <Check size={16} className="text-green-500" />
-                      ) : (
-                        <Copy size={16} />
-                      )}
-                    </button>
-                  )}
-                </h3>
-                {output ? (
-                  <p className="text-lg leading-relaxed text-foreground animate-in fade-in duration-700">
-                    {output}
-                  </p>
-                ) : (
-                  <div className="flex flex-col items-center justify-center h-48 text-foreground italic border border-dashed border-foreground/20 rounded-none bg-foreground/[0.02]">
-                    <span className="font-mono text-[10px] uppercase opacity-50">
-                      System Idle: Select Mode
-                    </span>
+              {/* Action Buttons */}
+              <div className="flex items-center gap-3">
+                <button className="max-sm:hidden px-6 py-3 bg-[#F9F9F9] border border-black/5 text-zinc-500 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-sm hover:bg-zinc-50 transition-all">
+                  AI Summary
+                </button>
+
+                <div className="flex items-center gap-1 bg-white border border-black/5 rounded-full p-1 shadow-xl">
+                  <button className="px-6 py-2 bg-black text-white rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors">
+                    Save
+                  </button>
+                  <div className="h-8 w-8 bg-black text-white rounded-full flex items-center justify-center">
+                    <ArrowRight size={14} className="rotate-90" />
                   </div>
-                )}
-              </div>
-
-              <div className="mt-8 pt-6 border-t border-foreground/10 flex items-center justify-between text-[10px] font-mono text-zinc-500 uppercase">
-                <span>AI Powered Generation</span>
-                <span className="flex items-center gap-1">
-                  <ArrowRight size={10} /> Ready to send
-                </span>
+                </div>
               </div>
             </div>
           </div>
@@ -339,16 +232,7 @@ const Landing = () => {
 
       <footer className="py-12 border-t border-foreground/10 text-center text-zinc-500 text-[10px] font-mono uppercase tracking-widest">
         <p>
-          &copy; {new Date().getFullYear()}{" "}
-          <a
-            href="https://oyenekanemmanuel.xyz/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-foreground transition-colors"
-          >
-            Elite DEV
-          </a>{" "}
-          // All Rights Reserved
+          &copy; {new Date().getFullYear()} Elite DEV // All Rights Reserved
         </p>
       </footer>
     </div>

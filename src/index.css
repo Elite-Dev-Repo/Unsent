@@ -135,9 +135,20 @@
 }
 
 textarea::placeholder {
-  opacity: 0.5;
+  opacity: 1;
 }
 
 .cont {
   @apply mx-auto px-5 max-w-300;
+}
+
+.step {
+  box-shadow:
+    10px 15px 0px 0px rgba(0, 0, 0, 0.8),
+    20px 30px 0px 0px rgba(0, 0, 0, 0.5);
+}
+.step:hover {
+  box-shadow:
+    5px 10px 0px 0px rgba(0, 0, 0, 0.8),
+    10px 20px 0px 0px rgba(0, 0, 0, 0.5);
 }

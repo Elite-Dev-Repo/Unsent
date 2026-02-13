@@ -31,7 +31,7 @@ const Auth = () => {
     if (error) toast.error(error.message);
     else {
       toast.success("Login successful!");
-      navigate("/");
+      navigate("/maketext");
     }
     setLoading(false);
   };
@@ -60,7 +60,7 @@ const Auth = () => {
               Access_System.
             </h2>
             <p className="font-mono text-[10px] text-zinc-500 mt-2 uppercase">
-              Identity verification required // v2.0
+              Identity verification required
             </p>
           </div>
 
@@ -95,7 +95,7 @@ const Auth = () => {
               <Button
                 onClick={handleLogin}
                 disabled={loading}
-                className="rounded-none border border-foreground bg-foreground text-background hover:bg-zinc-200 transition-colors font-mono text-[10px] uppercase font-bold h-12"
+                className="rounded-none border border-foreground bg-foreground text-background hover:text-foreground hover:bg-zinc-200 transition-colors font-mono text-[10px] uppercase font-bold h-12"
               >
                 {loading ? "AUTHENTICATING..." : "LOGIN"}
               </Button>
