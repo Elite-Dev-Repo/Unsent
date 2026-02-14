@@ -105,7 +105,7 @@ Now generate the final message.
     },
     {
       id: "boss",
-      label: "Executive Pivot",
+      label: "Quick Pivot",
       icon: TrendingUp,
       activeClass: "bg-black text-white shadow-lg",
       description: `
@@ -191,15 +191,15 @@ Now generate the final message.
           }}
         />
 
-        <div className="bg-background relative z-10 rounded-[calc(0.75rem-1px)] overflow-hidden grid md:grid-cols-2">
+        <div className="overflow-hidden bg-background relative z-10 rounded-[calc(0.75rem-1px)] overflow-hidden grid md:grid-cols-2">
           {/* Input Side */}
-          <div className="p-8 border-r border-foreground/10 text-left">
+          <div className="p-4 border-r border-foreground/10 text-left">
             <h3 className="text-sm font-semibold uppercase tracking-widest text-foreground mb-4 font-mono">
               Input Message Context
             </h3>
             <Textarea
               placeholder="Type the vibe of your message here..."
-              className="bg-foreground/5 px-4 border-none text-xl focus-visible:ring-0 placeholder:text-foreground/40 min-h-[150px] resize-none rounded-none"
+              className="bg-foreground/5 px-4 border-none text-xl focus-visible:ring-0 placeholder:text-foreground/40 h-[150px] overflow-y-auto resize-none rounded-none"
               value={input}
               onChange={(e) => setInput(e.target.value)}
             />
@@ -215,7 +215,7 @@ Now generate the final message.
                   <Button
                     key={mode.id}
                     onClick={() => handleGenerate(mode)}
-                    className={`justify-start gap-3 h-12 rounded-none text-foreground transition-all uppercase font-mono text-[10px] tracking-widest
+                    className={`justify-start gap-2 h-12 rounded-none text-foreground transition-all uppercase font-mono text-[10px] tracking-widest
                         ${isActive ? mode.activeClass : "bg-foreground/5 border border-foreground/10 hover:bg-foreground/10"}`}
                   >
                     <Icon size={18} /> {mode.label}
@@ -226,7 +226,7 @@ Now generate the final message.
           </div>
 
           {/* Output Side */}
-          <div className="p-8 bg-background/40 text-left relative flex flex-col justify-between">
+          <div className="p-4 bg-background/40 text-left relative flex flex-col justify-between">
             <div>
               <h3 className="text-sm font-semibold uppercase tracking-widest text-foreground mb-4 flex justify-between items-center font-mono">
                 Response Draft
