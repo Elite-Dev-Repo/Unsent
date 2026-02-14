@@ -33,7 +33,7 @@ function Maketext() {
     setOutput("Generating...");
 
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
       const prompt = `
 You are an elite communication strategist who writes emotionally intelligent, concise, high-impact text messages response.
 
@@ -228,9 +228,6 @@ Now generate the final message.
                 <span className="flex items-center gap-2">
                   <div className="h-1 w-1 bg-green-500 rounded-full animate-pulse" />
                   Neural_Engine_Active
-                </span>
-                <span className="flex items-center gap-1 opacity-50">
-                  v2.0.4 <ArrowRight size={10} />
                 </span>
               </div>
             </div>
