@@ -1,5 +1,6 @@
 import React from "react";
 import { MessageSquare, Zap, ShieldCheck } from "lucide-react";
+import { motion } from "framer-motion"; // Added
 
 // --- HOW IT WORKS: STACKED GRAIN CARDS ---
 const HowItWorks = () => {
@@ -9,25 +10,62 @@ const HowItWorks = () => {
     { title: "OUTPUT", desc: "COPY RESPONSE.", icon: ShieldCheck },
   ];
 
+  // Container variants to stagger the children
+  const containerVariants = {
+    initial: {},
+    whileInView: {
+      transition: {
+        staggerChildren: 0.15,
+      },
+    },
+  };
+
+  // Individual card entrance variants
+  const itemVariants = {
+    initial: { opacity: 0, x: -50 },
+    whileInView: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.5, ease: "easeOut" },
+    },
+  };
+
   return (
     <section
       className="cont py-24 px-8 bg-background border-t border-foreground/10"
       id="how-it-works"
     >
-      <div className="mb-16">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="mb-16"
+      >
         <h2 className="text-4xl font-semibold tracking-tighter uppercase italic">
           How It Works
         </h2>
-      </div>
-      <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-12 ">
+      </motion.div>
+
+      <motion.div
+        variants={containerVariants}
+        initial="initial"
+        whileInView="whileInView"
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="max-w-6xl mx-auto grid md:grid-cols-3 gap-12"
+      >
         {steps.map((s, i) => {
           const Icon = s.icon;
           return (
-            <div
+            <motion.div
               key={i}
+              variants={itemVariants}
+              whileHover={{
+                scale: 1.02,
+                backgroundColor: "rgba(0,0,0,0.02)",
+                transition: { duration: 0.2 },
+              }}
               className="step relative group p-8 bg-background border border-foreground rounded-none
-                          
-                         transition-all duration-300 ease-out overflow-hidden max-sm:w-[330px]"
+                         transition-all duration-300 ease-out overflow-hidden max-sm:w-full"
             >
               {/* --- Grain/Noise Overlay --- */}
               <div
@@ -45,9 +83,15 @@ const HowItWorks = () => {
                     Step_0{i + 1}
                   </span>
                 </div>
-                <div className="mb-6 h-10 w-10 border border-foreground flex items-center justify-center bg-foreground/5">
+
+                <motion.div
+                  initial={{ rotate: -10, opacity: 0 }}
+                  whileInView={{ rotate: 0, opacity: 1 }}
+                  transition={{ delay: 0.3 + i * 0.1 }}
+                  className="mb-6 h-10 w-10 border border-foreground flex items-center justify-center bg-foreground/5"
+                >
                   <Icon size={20} />
-                </div>
+                </motion.div>
 
                 <div className="flex flex-col gap-1">
                   <h2 className="text-sm font-bold tracking-tighter uppercase mb-4">
@@ -64,10 +108,10 @@ const HowItWorks = () => {
               <div className="absolute bottom-0 right-0 p-1 opacity-20">
                 <div className="border-r border-b border-foreground h-2 w-2" />
               </div>
-            </div>
+            </motion.div>
           );
         })}
-      </div>
+      </motion.div>
     </section>
   );
 };

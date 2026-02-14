@@ -9,6 +9,7 @@ import {
   Zap,
   Menu,
 } from "lucide-react";
+import { motion } from "framer-motion"; // Added
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { supabase } from "./lib/supabase";
@@ -49,14 +50,20 @@ const MODES = [
   },
 ];
 
+// Animation Variants
+const fadeInUp = {
+  initial: { opacity: 0, y: 20 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true },
+  transition: { duration: 0.6, ease: "easeOut" },
+};
+
 const Landing = () => {
   const [output, setOutput] = useState(
     "I've received your proposal and appreciate the detail included. To ensure this aligns with our current roadmap and high-priority deliverables, I’ll need to run a quick internal review with the stakeholders. I expect to have a formal response and next steps for you by Tuesday. In the meantime, feel free to share any additional technical documentation.",
   );
   const [activeModeId, setActiveModeId] = useState(null);
   const [copied, setCopied] = useState(false);
-
-  // FIX: useState returns an array [state, setState]
   const [session, setSession] = useState(null);
 
   useEffect(() => {
@@ -68,7 +75,6 @@ const Landing = () => {
     };
     getSession();
 
-    // Optional: Listen for auth changes to keep it truly dynamic
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -94,8 +100,16 @@ const Landing = () => {
       <Nav />
 
       <main className="max-w-6xl mx-auto px-6 pt-20 pb-32 text-center">
-        <div className="flex flex-col items-center justify-center gap-6 ">
-          <div className="flex items-center gap-3 px-3 py-1 border border-foreground/20 bg-foreground/[0.03] rounded-full">
+        <motion.div
+          initial="initial"
+          whileInView="whileInView"
+          viewport={{ once: true }}
+          className="flex flex-col items-center justify-center gap-6 "
+        >
+          <motion.div
+            variants={fadeInUp}
+            className="flex items-center gap-3 px-3 py-1 border border-foreground/20 bg-foreground/[0.03] rounded-full"
+          >
             <div className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-foreground opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-foreground"></span>
@@ -103,35 +117,45 @@ const Landing = () => {
             <span className="font-mono text-[10px] tracking-widest uppercase font-bold px-2">
               Just a dev tryna make it.
             </span>
-          </div>
+          </motion.div>
 
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tighter bg-gradient-to-b from-foreground to-zinc-900 bg-clip-text text-transparent text-center">
+          <motion.h1
+            variants={fadeInUp}
+            className="text-5xl md:text-7xl font-bold tracking-tighter bg-gradient-to-b from-foreground to-zinc-900 bg-clip-text text-transparent text-center"
+          >
             Stop Overthinking. <br /> Start Sending.
-          </h1>
+          </motion.h1>
 
-          <p className="text-foreground text-md md:text-lg max-w-2xl mx-auto text-center leading-relaxed">
+          <motion.p
+            variants={fadeInUp}
+            className="text-foreground text-md md:text-lg max-w-2xl mx-auto text-center leading-relaxed"
+          >
             The premium interface for high-stakes communication. Craft the
             perfect message, set boundaries, and save your battery for things
             that matter.
-          </p>
+          </motion.p>
 
-          {/* DYNAMIC LINK FIX */}
-          <Link to={session ? "/maketext" : "/auth"}>
-            <button className="cursor-pointer group h-12 flex items-center  justify-between  bg-foreground text-background mb-16 transition-all font-bold uppercase tracking-widest text-xs rounded-none border border-foreground">
-              <span className="pl-5 pr-5">Get Started</span>
-              <span className=" bg-background text-foreground h-full w-10 flex items-center justify-center hidden group-hover:flex animate-in fade-in slide-in-from-left-10 duration-300">
-                <ArrowRight size={16} />
-              </span>
-            </button>
-          </Link>
-        </div>
+          <motion.div variants={fadeInUp}>
+            <Link to={session ? "/maketext" : "/auth"}>
+              <button className="cursor-pointer group h-12 flex items-center  justify-between  bg-foreground text-background mb-16 transition-all font-bold uppercase tracking-widest text-xs rounded-none border border-foreground">
+                <span className="pl-5 pr-5">Get Started</span>
+                <span className=" bg-background text-foreground h-full w-10 flex items-center justify-center hidden group-hover:flex animate-in fade-in slide-in-from-left-10 duration-300">
+                  <ArrowRight size={16} />
+                </span>
+              </button>
+            </Link>
+          </motion.div>
+        </motion.div>
 
         {/* --- Main App Widget --- */}
-        <div
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
           className="max-w-4xl mx-auto bg-[#F2F2F2] rounded-[48px] p-4 relative overflow-hidden"
           style={{ boxShadow: "0 2px 5px 0px rgba(0,0,0,0.5)" }}
         >
-          {/* Grain Texture Overlay */}
           <div
             className="absolute inset-0 pointer-events-none opacity-[0.03] z-0"
             style={{
@@ -140,7 +164,6 @@ const Landing = () => {
           />
 
           <div className="relative z-10 bg-white rounded-[40px] shadow-sm flex flex-col min-h-[500px]">
-            {/* --- Top Toolbar --- */}
             <div className="p-6 flex items-center justify-between ">
               <div className="flex items-center gap-2 bg-[#F9F9F9] border border-black/5 rounded-full px-4 py-2 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05)]">
                 <span className="text-[11px] font-bold font-mono tracking-tighter uppercase mr-2 border-r pr-2 border-black/10">
@@ -178,18 +201,20 @@ const Landing = () => {
               </div>
             </div>
 
-            {/* --- Content Area --- */}
             <div className="flex-1 px-10 max-sm:px-4 pb-32 text-left">
               <div className="bg-foreground/5 rounded-xl p-6 max-sm:p-4 h-[250px] mt-8 border border-zinc-100 animate-in fade-in slide-in-from-bottom-4 duration-700 overflow-y-auto">
-                <p className="max-sm:text-sm text-lg leading-relaxed text-foreground font-light">
+                <motion.p
+                  key={output}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="max-sm:text-sm text-lg leading-relaxed text-foreground font-light"
+                >
                   {output}
-                </p>
+                </motion.p>
               </div>
             </div>
 
-            {/* --- Floating Bottom Controls --- */}
             <div className="absolute bottom-10 left-10 right-10 max-sm:left-4 max-sm:right-4 flex items-center justify-between">
-              {/* Mode Selection */}
               <div className="flex items-center gap-1 bg-white border border-black/5 rounded-full p-1 shadow-xl">
                 {MODES.map((mode) => {
                   const Icon = mode.icon;
@@ -210,7 +235,6 @@ const Landing = () => {
                 })}
               </div>
 
-              {/* Action Buttons */}
               <div className="flex items-center gap-3">
                 <button className="max-sm:hidden px-6 py-3 bg-[#F9F9F9] border border-black/5 text-zinc-500 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-sm hover:bg-zinc-50 transition-all">
                   AI Summary
@@ -227,11 +251,13 @@ const Landing = () => {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </main>
 
       <HowItWorks />
+
       <Pricing />
+
       <FAQ />
 
       <Footer />
