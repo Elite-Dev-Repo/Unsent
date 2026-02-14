@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Toaster, toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { House } from "lucide-react";
 
 const Auth = () => {
   const [loading, setLoading] = useState(false);
@@ -55,13 +56,19 @@ const Auth = () => {
         />
 
         <div className="relative z-10 space-y-6">
-          <div className="mb-8">
+          <div className="mb-8 float-right">
             <h2 className="text-3xl font-bold tracking-tighter uppercase italic underline decoration-foreground/20 decoration-4">
               Access_System.
             </h2>
             <p className="font-mono text-[10px] text-zinc-500 mt-2 uppercase">
               Identity verification required
             </p>
+          </div>
+          <div
+            onClick={() => navigate("/")}
+            className="cursor-pointer active:scale-95 transition-all animate-pulse text-xs font-mono flex justify-center items-center gap-2 absolute top-4 left-[-5%]"
+          >
+            <House />
           </div>
 
           <form className="space-y-4">

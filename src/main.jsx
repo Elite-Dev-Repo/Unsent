@@ -5,6 +5,8 @@ import "./index.css";
 import App from "./App.jsx";
 import Auth from "./Auth.jsx";
 import Maketext from "./Maketext";
+import ProtectedRoute from "./ProtectedRoute";
+import { AuthProvider } from "./AuthContext";
 
 const router = createBrowserRouter([
   {
@@ -17,12 +19,18 @@ const router = createBrowserRouter([
   },
   {
     path: "/maketext",
-    element: <Maketext />,
+    element: (
+      <ProtectedRoute>
+        <Maketext />
+      </ProtectedRoute>
+    ),
   },
 ]);
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </StrictMode>,
 );

@@ -17,6 +17,7 @@ import HowItWorks from "./components/Howitworks";
 import Pricing from "./components/Pricing";
 import FAQ from "./components/Faq";
 import Nav from "./components/Nav";
+import Footer from "./components/Footer";
 
 const MODES = [
   {
@@ -116,8 +117,11 @@ const Landing = () => {
 
           {/* DYNAMIC LINK FIX */}
           <Link to={session ? "/maketext" : "/auth"}>
-            <button className="px-8 py-3 bg-foreground text-background hover:bg-zinc-200 hover:text-foreground mb-16 transition-all font-bold uppercase tracking-widest text-xs rounded-none border border-foreground">
-              Get Started
+            <button className="cursor-pointer group h-12 flex items-center  justify-between  bg-foreground text-background mb-16 transition-all font-bold uppercase tracking-widest text-xs rounded-none border border-foreground">
+              <span className="pl-5 pr-5">Get Started</span>
+              <span className=" bg-background text-foreground h-full w-10 flex items-center justify-center hidden group-hover:flex animate-in fade-in slide-in-from-left-10 duration-300">
+                <ArrowRight size={16} />
+              </span>
             </button>
           </Link>
         </div>
@@ -230,11 +234,7 @@ const Landing = () => {
       <Pricing />
       <FAQ />
 
-      <footer className="py-12 border-t border-foreground/10 text-center text-zinc-500 text-[10px] font-mono uppercase tracking-widest">
-        <p>
-          &copy; {new Date().getFullYear()} Elite DEV // All Rights Reserved
-        </p>
-      </footer>
+      <Footer />
     </div>
   );
 };
