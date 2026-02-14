@@ -10,7 +10,7 @@ import {
   Check,
   ArrowRight,
 } from "lucide-react";
-import { Textarea } from "@/components/ui/textarea";
+// Removed Shadcn Textarea import
 import { Button } from "@/components/ui/button";
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
@@ -33,7 +33,7 @@ function Maketext() {
     setOutput("Generating...");
 
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" }); // Corrected model name string
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
       const prompt = `
 You are an elite communication strategist who writes emotionally intelligent, concise, high-impact text messages response.
 
@@ -139,7 +139,7 @@ Now generate the final message.
 
       <main className="flex-1 px-4 sm:px-6">
         <div
-          className="mb-10 max-w-4xl mx-auto border border-foreground rounded-xl relative overflow-hidden mt-6 sm:mt-10"
+          className="mb-10 max-w-4xl mx-auto border border-foreground rounded-xl relative overflow-hidden mt-6 sm:mt-10 bg-background"
           style={{
             boxShadow: "2px 3px 0px 0px rgba(0,0,0,.1)",
           }}
@@ -154,16 +154,21 @@ Now generate the final message.
 
           <div className="overflow-hidden bg-background relative z-10 rounded-[calc(0.75rem-1px)] grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-foreground/10">
             {/* Input Side */}
-            <div className="p-5 sm:p-6 text-left">
+            <div className="p-5 sm:p-6 text-left flex flex-col">
               <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-foreground/50 mb-4 font-mono">
                 Input Message Context
               </h3>
-              <Textarea
+
+              {/* USING STANDARD HTML TEXTAREA TAG FOR BETTER MOBILE CONTROL */}
+              <textarea
                 placeholder="Type the message context here..."
-                // Added text-base (16px) to prevent iOS auto-zoom
-                className="bg-foreground/[0.03] w-full px-4 py-3 border border-foreground/5 text-base focus-visible:ring-1 focus-visible:ring-foreground/20 placeholder:text-foreground/30 h-[150px] overflow-y-auto resize-none rounded-none transition-all"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck="false"
+                className="w-full bg-foreground/[0.03] px-4 py-3 border border-foreground/5 text-[16px] leading-snug focus:outline-none focus:bg-foreground/[0.05] placeholder:text-foreground/30 h-[180px] overflow-y-auto resize-none rounded-none transition-all appearance-none"
+                style={{ fontSize: "16px" }} // HARD-CODED to stop iOS/Android zoom
               />
 
               <h3 className="text-[10px] mt-8 font-bold uppercase tracking-[0.2em] text-foreground/50 font-mono">
