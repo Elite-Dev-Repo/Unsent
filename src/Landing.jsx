@@ -9,7 +9,7 @@ import {
   Zap,
   Menu,
 } from "lucide-react";
-import { motion } from "framer-motion"; // Added
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { supabase } from "./lib/supabase";
@@ -25,7 +25,7 @@ const MODES = [
     id: "no",
     label: "Hard Decline",
     icon: XCircle,
-    activeClass: "bg-black text-white shadow-lg",
+    activeClass: "bg-foreground text-background shadow-lg",
     description: "Firm boundaries, zero explanation.",
     draft:
       "I’ve reviewed the request. Given my current project load and internal commitments, I’m unable to take this on. I won't be able to provide further cycles on this for the foreseeable future. Best of luck with the initiative.",
@@ -34,7 +34,7 @@ const MODES = [
     id: "boss",
     label: "Executive Pivot",
     icon: Briefcase,
-    activeClass: "bg-black text-white shadow-lg",
+    activeClass: "bg-foreground text-background shadow-lg",
     description: "High-level strategic redirection.",
     draft:
       "This doesn’t currently align with our core KPIs or the primary stakeholder roadmap. We need to pause and pivot the current strategy to ensure we aren't burning resources on low-impact tasks. Let's sync once you've re-aligned with the broader vision.",
@@ -43,14 +43,13 @@ const MODES = [
     id: "safe",
     label: "Cooling Period",
     icon: ShieldAlert,
-    activeClass: "bg-black text-white shadow-lg",
+    activeClass: "bg-foreground text-background shadow-lg",
     description: "Prevent emotional or late-night sends.",
     draft:
       "SYSTEM NOTICE: This draft has been placed in an encrypted holding state. To maintain professional equilibrium, the 'Send' protocol is restricted until the next business cycle (08:00 AM). Review this with fresh eyes before finalizing.",
   },
 ];
 
-// Animation Variants
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
   whileInView: { opacity: 1, y: 0 },
@@ -60,7 +59,7 @@ const fadeInUp = {
 
 const Landing = () => {
   const [output, setOutput] = useState(
-    "I've received your proposal and appreciate the detail included. To ensure this aligns with our current roadmap and high-priority deliverables, I’ll need to run a quick internal review with the stakeholders. I expect to have a formal response and next steps for you by Tuesday. In the meantime, feel free to share any additional technical documentation.",
+    "I've received your proposal and appreciate the detail included. To ensure this aligns with our current roadmap and high-priority deliverables, I’ll need to run a quick internal review with the stakeholders.",
   );
   const [activeModeId, setActiveModeId] = useState(null);
   const [copied, setCopied] = useState(false);
@@ -96,7 +95,7 @@ const Landing = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-indigo-500/30">
+    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-foreground selection:text-background">
       <Nav />
 
       <main className="max-w-6xl mx-auto px-6 pt-20 pb-32 text-center">
@@ -104,7 +103,7 @@ const Landing = () => {
           initial="initial"
           whileInView="whileInView"
           viewport={{ once: true }}
-          className="flex flex-col items-center justify-center gap-6 "
+          className="flex flex-col items-center justify-center gap-6"
         >
           <motion.div
             variants={fadeInUp}
@@ -119,27 +118,29 @@ const Landing = () => {
             </span>
           </motion.div>
 
+          {/* RESTORED: Gradient Heading */}
           <motion.h1
             variants={fadeInUp}
-            className="text-5xl md:text-7xl font-bold tracking-tighter bg-gradient-to-b from-foreground to-zinc-900 bg-clip-text text-transparent text-center"
+            className="text-5xl md:text-7xl font-bold tracking-tighter bg-gradient-to-b from-foreground to-foreground/40 bg-clip-text text-transparent text-center"
           >
             Stop Overthinking. <br /> Start Sending.
           </motion.h1>
 
           <motion.p
             variants={fadeInUp}
-            className="text-foreground text-md md:text-lg max-w-2xl mx-auto text-center leading-relaxed"
+            className="text-foreground/70 text-md md:text-lg max-w-2xl mx-auto text-center leading-relaxed"
           >
             The premium interface for high-stakes communication. Craft the
             perfect message, set boundaries, and save your battery for things
             that matter.
           </motion.p>
 
+          {/* RESTORED: Two-tone Button Logic */}
           <motion.div variants={fadeInUp}>
             <Link to={session ? "/maketext" : "/auth"}>
-              <button className="cursor-pointer group h-12 flex items-center  justify-between  bg-foreground text-background mb-16 transition-all font-bold uppercase tracking-widest text-xs rounded-none border border-foreground">
+              <button className="cursor-pointer group h-12 flex items-center justify-between bg-foreground text-background mb-16 transition-all font-bold uppercase tracking-widest text-xs rounded-none border border-foreground">
                 <span className="pl-5 pr-5">Get Started</span>
-                <span className=" bg-background text-foreground h-full w-10 flex items-center justify-center hidden group-hover:flex animate-in fade-in slide-in-from-left-10 duration-300">
+                <span className="bg-background text-foreground h-full w-10 flex items-center justify-center hidden group-hover:flex animate-in fade-in slide-in-from-left-10 duration-300">
                   <ArrowRight size={16} />
                 </span>
               </button>
@@ -153,9 +154,10 @@ const Landing = () => {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="max-w-4xl mx-auto bg-[#F2F2F2] rounded-[48px] p-4 relative overflow-hidden"
-          style={{ boxShadow: "0 2px 5px 0px rgba(0,0,0,0.5)" }}
+          className="max-w-5xl mx-auto bg-foreground/5 rounded-[48px] p-4 relative overflow-hidden border border-foreground/5"
+          style={{ boxShadow: "0 2px 15px 0px rgba(0,0,0,0.1)" }}
         >
+          {/* Grain Texture Overlay */}
           <div
             className="absolute inset-0 pointer-events-none opacity-[0.03] z-0"
             style={{
@@ -163,23 +165,24 @@ const Landing = () => {
             }}
           />
 
-          <div className="relative z-10 bg-white rounded-[40px] shadow-sm flex flex-col min-h-[500px]">
+          <div className="relative z-10 bg-background rounded-[40px] shadow-sm flex flex-col min-h-[500px] border border-foreground/10">
+            {/* Header Area */}
             <div className="p-6 flex items-center justify-between ">
-              <div className="flex items-center gap-2 bg-[#F9F9F9] border border-black/5 rounded-full px-4 py-2 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05)]">
-                <span className="text-[11px] font-bold font-mono tracking-tighter uppercase mr-2 border-r pr-2 border-black/10">
+              <div className="flex items-center gap-2 bg-foreground/[0.02] border border-foreground/5 rounded-full px-4 py-2 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05)]">
+                <span className="text-[11px] font-bold font-mono tracking-tighter uppercase mr-2 border-r pr-2 border-foreground/10">
                   Generated Text
                 </span>
-                <button className="p-1 hover:bg-black/5 rounded-md">
+                <button className="p-1 hover:bg-foreground/5 rounded-md text-foreground/40">
                   <Zap size={14} />
                 </button>
-                <span className="h-4 w-[1px] bg-black/10 mx-1" />
-                <button className="text-xs font-bold px-2 italic max-sm:hidden">
+                <span className="h-4 w-[1px] bg-foreground/10 mx-1" />
+                <button className="text-xs font-bold px-2 italic max-sm:hidden text-foreground/40">
                   B
                 </button>
-                <button className="text-xs font-serif px-2 italic max-sm:hidden">
+                <button className="text-xs font-serif px-2 italic max-sm:hidden text-foreground/40">
                   i
                 </button>
-                <button className="p-1 hover:bg-black/5 rounded-md">
+                <button className="p-1 hover:bg-foreground/5 rounded-md text-foreground/40">
                   <Menu size={14} />
                 </button>
               </div>
@@ -187,35 +190,36 @@ const Landing = () => {
               <div className="flex gap-2">
                 <button
                   onClick={copyToClipboard}
-                  className="h-10 w-10 bg-black rounded-full flex items-center justify-center shadow-md cursor-pointer hover:scale-105 active:scale-95 transition-all"
+                  className="h-10 w-10 bg-foreground text-background rounded-full flex items-center justify-center shadow-md cursor-pointer hover:scale-105 active:scale-95 transition-all"
                 >
-                  {copied ? (
-                    <Check size={18} className="text-white" />
-                  ) : (
-                    <Copy className="text-background" size={17} />
-                  )}
+                  {copied ? <Check size={18} /> : <Copy size={17} />}
                 </button>
-                <div className="max-sm:hidden h-10 w-10 bg-white border border-black/10 rounded-full flex items-center justify-center shadow-sm cursor-pointer hover:bg-zinc-50 transition-colors">
+                <div className="max-sm:hidden h-10 w-10 bg-background border border-foreground/10 rounded-full flex items-center justify-center shadow-sm cursor-pointer hover:bg-foreground/5 transition-colors">
                   <ArrowRight size={18} className="rotate-[-45deg]" />
                 </div>
               </div>
             </div>
 
+            {/* Content Area */}
             <div className="flex-1 px-10 max-sm:px-4 pb-32 text-left">
-              <div className="bg-foreground/5 rounded-xl p-6 max-sm:p-4 h-[250px] mt-8 border border-zinc-100 animate-in fade-in slide-in-from-bottom-4 duration-700 overflow-y-auto">
-                <motion.p
-                  key={output}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="max-sm:text-sm text-lg leading-relaxed text-foreground font-light"
-                >
-                  {output}
-                </motion.p>
+              <div className="bg-foreground/[0.03] rounded-xl p-6 max-sm:p-4 h-[250px] mt-8 border border-foreground/5 overflow-y-auto">
+                <AnimatePresence mode="wait">
+                  <motion.p
+                    key={output}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="max-sm:text-sm text-lg leading-relaxed text-foreground font-light"
+                  >
+                    {output}
+                  </motion.p>
+                </AnimatePresence>
               </div>
             </div>
 
+            {/* Bottom Controls Area */}
             <div className="absolute bottom-10 left-10 right-10 max-sm:left-4 max-sm:right-4 flex items-center justify-between">
-              <div className="flex items-center gap-1 bg-white border border-black/5 rounded-full p-1 shadow-xl">
+              <div className="flex items-center gap-1 bg-background border border-foreground/5 rounded-full p-1 shadow-xl">
                 {MODES.map((mode) => {
                   const Icon = mode.icon;
                   const isActive = activeModeId === mode.id;
@@ -224,7 +228,7 @@ const Landing = () => {
                       key={mode.id}
                       onClick={() => handleGenerate(mode)}
                       className={`flex items-center gap-2 px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all
-                        ${isActive ? "bg-black text-white shadow-lg" : "bg-transparent text-zinc-400 hover:text-black hover:bg-zinc-50"}`}
+                        ${isActive ? "bg-foreground text-background shadow-lg" : "bg-transparent text-foreground/40 hover:text-foreground hover:bg-foreground/5"}`}
                     >
                       <Icon size={14} />
                       <span className={isActive ? "block" : "hidden"}>
@@ -236,15 +240,15 @@ const Landing = () => {
               </div>
 
               <div className="flex items-center gap-3">
-                <button className="max-sm:hidden px-6 py-3 bg-[#F9F9F9] border border-black/5 text-zinc-500 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-sm hover:bg-zinc-50 transition-all">
+                <button className="max-sm:hidden px-6 py-3 bg-foreground/[0.02] border border-foreground/5 text-foreground/40 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-sm hover:bg-foreground/5 transition-all">
                   AI Summary
                 </button>
 
-                <div className="flex items-center gap-1 bg-white border border-black/5 rounded-full p-1 shadow-xl">
-                  <button className="px-6 py-2 bg-black text-white rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors">
+                <div className="flex items-center gap-1 bg-background border border-foreground/5 rounded-full p-1 shadow-xl">
+                  <button className="px-6 py-2 bg-foreground text-background rounded-full text-[10px] font-bold uppercase tracking-widest hover:opacity-90 transition-opacity">
                     Save
                   </button>
-                  <div className="h-8 w-8 bg-black text-white rounded-full flex items-center justify-center">
+                  <div className="h-8 w-8 bg-foreground text-background rounded-full flex items-center justify-center">
                     <ArrowRight size={14} className="rotate-90" />
                   </div>
                 </div>
@@ -255,11 +259,8 @@ const Landing = () => {
       </main>
 
       <HowItWorks />
-
       <Pricing />
-
       <FAQ />
-
       <Footer />
     </div>
   );

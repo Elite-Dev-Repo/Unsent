@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { Link } from "react-router-dom";
-import { Zap, Menu } from "lucide-react";
+import { Zap, Menu, Moon, Sun } from "lucide-react"; // Added Moon/Sun
 import { Button } from "@/components/ui/button";
+import { useTheme } from "next-themes"; // Added
+import { motion, AnimatePresence } from "framer-motion"; // Added
 import {
   Sheet,
   SheetContent,
@@ -10,6 +12,48 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+
+// Sub-component for the mechanical toggle
+const ThemeToggle = () => {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return <div className="h-9 w-9 border border-foreground/10" />;
+
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      className="relative h-9 w-9 rounded-none border border-foreground/20 hover:bg-foreground/5 transition-colors overflow-hidden"
+    >
+      <AnimatePresence mode="wait" initial={false}>
+        {theme === "dark" ? (
+          <motion.div
+            key="moon"
+            initial={{ y: 10, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -10, opacity: 0 }}
+            transition={{ duration: 0.15 }}
+          >
+            <Moon size={16} />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="sun"
+            initial={{ y: 10, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -10, opacity: 0 }}
+            transition={{ duration: 0.15 }}
+          >
+            <Sun size={16} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </Button>
+  );
+};
 
 function Nav() {
   const NAV_LINKS = [
@@ -19,6 +63,7 @@ function Nav() {
   ];
 
   const [session, setSession] = useState(null);
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -32,15 +77,17 @@ function Nav() {
 
     return () => subscription.unsubscribe();
   }, []);
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
   };
+
   return (
     <nav className="flex items-center justify-between px-8 py-4 border-b border-foreground/30 bg-background sticky top-0 z-50">
       <Link to={"/"}>
         <div className="flex items-center gap-2">
           <div className="h-8 w-8 bg-foreground rounded-lg flex items-center justify-center">
-            <Zap size={22} fill="#fff" />
+            <Zap size={22} className="text-background" fill="currentColor" />
           </div>
           <span className="text-xl font-bold tracking-tight text-foreground uppercase italic">
             Unsent.
@@ -61,8 +108,10 @@ function Nav() {
         ))}
       </div>
 
-      {/* Desktop Auth */}
+      {/* Desktop Auth & Theme */}
       <div className="hidden md:flex items-center gap-4">
+        <ThemeToggle />
+        <div className="h-4 w-[1px] bg-foreground/10 mx-2" /> {/* Divider */}
         {session ? (
           <div className="flex items-center gap-4">
             <span className="font-mono text-[10px] text-zinc-500 uppercase">
@@ -71,14 +120,14 @@ function Nav() {
             <Button
               variant="outline"
               onClick={handleLogout}
-              className="rounded-none border-foreground/20 font-mono text-[10px] h-8"
+              className="rounded-none border-foreground/20 font-mono text-[10px] h-8 hover:bg-foreground hover:text-background"
             >
               LOGOUT
             </Button>
           </div>
         ) : (
           <Link to="/auth">
-            <Button className="bg-foreground text-background hover:bg-zinc-200 hover:text-foreground transition-all font-bold uppercase tracking-widest text-[10px] rounded-none px-6">
+            <Button className="bg-foreground text-background hover:bg-zinc-200 hover:text-foreground transition-all font-bold uppercase tracking-widest text-[10px] rounded-none px-6 h-9">
               Sign Up
             </Button>
           </Link>
@@ -86,7 +135,8 @@ function Nav() {
       </div>
 
       {/* --- Mobile Menu Sheet --- */}
-      <div className="md:hidden">
+      <div className="md:hidden flex items-center gap-2">
+        <ThemeToggle />
         <Sheet>
           <SheetTrigger asChild>
             <Button
@@ -101,7 +151,6 @@ function Nav() {
             side="right"
             className="w-[300px] sm:w-[400px] border-l border-foreground bg-background p-0 rounded-none"
           >
-            {/* Grain Texture Overlay in Drawer */}
             <div
               className="absolute inset-0 pointer-events-none opacity-[0.04] z-0"
               style={{
@@ -121,7 +170,7 @@ function Nav() {
                   <a
                     key={link.name}
                     href={link.href}
-                    className="text-lg font-bold uppercase  tracking-tighter hover:translate-x-2 transition-transform duration-200"
+                    className="text-lg font-bold uppercase tracking-tighter hover:translate-x-2 transition-transform duration-200"
                   >
                     {link.name}
                   </a>

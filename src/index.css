@@ -2,6 +2,9 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* Tailwind v4 uses the @custom-variant for class-based dark mode.
+  This ensures compatibility with the next-themes strategy.
+*/
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -12,6 +15,8 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+
+  /* Mapping Shadcn Variables to Tailwind v4 Theme colors */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -117,38 +122,45 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
-    @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased transition-colors duration-300;
   }
 }
 
+/* Updated selection to use CSS variables for theme-aware highlighting */
 ::selection {
-  background-color: #0f0f0f;
-  color: #f5f5f5;
+  background-color: var(--foreground);
+  color: var(--background);
 }
 
+/* Hide scrollbar but keep functionality */
 ::-webkit-scrollbar {
-  width: 0;
+  display: none;
 }
 
 textarea::placeholder {
-  opacity: 1;
+  opacity: 0.5;
 }
 
 .cont {
-  @apply mx-auto px-5 max-w-300;
+  @apply mx-auto px-5 max-w-7xl; /* Standardized max-width */
 }
 
+/* Brutalist Step Card Shadows */
 .step {
-  box-shadow:
-    10px 15px 0px 0px rgba(0, 0, 0, 0.8),
-    20px 30px 0px 0px rgba(0, 0, 0, 0.5);
+  box-shadow: 10px 15px 0px 0px rgba(0, 0, 0, 0.8);
+  transition:
+    box-shadow 0.2s ease-in-out,
+    transform 0.2s ease-in-out;
 }
+
 .step:hover {
-  box-shadow:
-    5px 10px 0px 0px rgba(0, 0, 0, 0.8),
-    10px 20px 0px 0px rgba(0, 0, 0, 0.5);
+  transform: translate(-2px, -2px);
+  box-shadow: 12px 17px 0px 0px rgba(0, 0, 0, 0.9);
+}
+
+/* Dark mode shadow adjustment */
+.dark .step {
+  box-shadow: 10px 15px 0px 0px rgba(255, 255, 255, 0.1);
 }
