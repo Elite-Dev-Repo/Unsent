@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Toaster, toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { House } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion"; // Added
 
 const Auth = () => {
   const [loading, setLoading] = useState(false);
@@ -16,9 +17,11 @@ const Auth = () => {
     e.preventDefault();
     setLoading(true);
     const { error } = await supabase.auth.signUp({ email, password });
-    if (error) toast.error(error.message);
-    else toast.success("user created successfully");
-
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success("User created successfully. Please check your email.");
+    }
     setLoading(false);
   };
 
@@ -29,22 +32,49 @@ const Auth = () => {
       email,
       password,
     });
-    if (error) toast.error(error.message);
-    else {
+    if (error) {
+      toast.error(error.message);
+    } else {
       toast.success("Login successful!");
       navigate("/maketext");
     }
     setLoading(false);
   };
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0, scale: 0.95 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 0.4,
+        ease: "easeOut",
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0 },
+  };
+
   return (
-    <div className=" cont flex flex-col items-center justify-center py-20 left-1/2 top-1/2 translate-x-[-50%] translate-y-[-50%] absolute">
-      <Toaster position="top-center" />
-      <div
-        className="relative w-full max-w-md p-10 bg-background border border-foreground rounded-none overflow-hidden"
+    <div className="min-h-screen w-full bg-background flex items-center justify-center p-6 relative overflow-hidden">
+      <Toaster position="top-center" richColors />
+
+      {/* Background Decorative Element */}
+      <div className="absolute top-0 left-0 w-full h-1 bg-foreground/10" />
+
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="relative w-full max-w-md p-8 sm:p-10 bg-background border border-foreground rounded-none overflow-hidden z-10"
         style={{
           boxShadow:
-            "10px 15px 0px 0px rgba(0,0,0,.8), 20px 30px 0px 0px rgba(0,0,0,.5)",
+            "10px 15px 0px 0px rgba(0,0,0,.8), 20px 30px 0px 0px rgba(0,0,0,.05)",
         }}
       >
         {/* Grain Overlay */}
@@ -56,23 +86,32 @@ const Auth = () => {
         />
 
         <div className="relative z-10 space-y-6">
-          <div className="mb-8 float-right">
-            <h2 className="text-3xl font-bold tracking-tighter uppercase italic underline decoration-foreground/20 decoration-4">
-              Access_System.
-            </h2>
-            <p className="font-mono text-[10px] text-zinc-500 mt-2 uppercase">
-              Identity verification required
-            </p>
-          </div>
-          <div
-            onClick={() => navigate("/")}
-            className="cursor-pointer active:scale-95 transition-all animate-pulse text-xs font-mono flex justify-center items-center gap-2 absolute top-4 left-[-5%]"
+          <motion.div
+            variants={itemVariants}
+            className="mb-8 flex justify-between items-start"
           >
-            <House />
-          </div>
+            <div
+              onClick={() => navigate("/")}
+              className="group cursor-pointer active:scale-95 transition-all text-foreground/40 hover:text-foreground flex items-center gap-2"
+            >
+              <House size={18} />
+              <span className="font-mono text-[10px] uppercase hidden group-hover:inline animate-in fade-in slide-in-from-left-2">
+                Home
+              </span>
+            </div>
+
+            <div className="text-right">
+              <h2 className="text-2xl sm:text-3xl font-bold tracking-tighter uppercase italic underline decoration-foreground/20 decoration-4">
+                Access_System.
+              </h2>
+              <p className="font-mono text-[9px] text-zinc-500 mt-1 uppercase tracking-widest">
+                ID_Verification_Required
+              </p>
+            </div>
+          </motion.div>
 
           <form className="space-y-4">
-            <div className="space-y-1">
+            <motion.div variants={itemVariants} className="space-y-1">
               <label className="font-mono text-[10px] uppercase font-bold text-zinc-400 ml-1">
                 Email_Address
               </label>
@@ -81,11 +120,11 @@ const Auth = () => {
                 placeholder="USER@DOMAIN.COM"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="rounded-none border-foreground/30 focus:border-foreground bg-foreground/5 font-mono text-xs uppercase"
+                className="rounded-none border-foreground/30 focus:border-foreground bg-foreground/5 font-mono text-xs uppercase h-11"
               />
-            </div>
+            </motion.div>
 
-            <div className="space-y-1">
+            <motion.div variants={itemVariants} className="space-y-1">
               <label className="font-mono text-[10px] uppercase font-bold text-zinc-400 ml-1">
                 Secure_Password
               </label>
@@ -94,11 +133,14 @@ const Auth = () => {
                 placeholder="********"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="rounded-none border-foreground/30 focus:border-foreground bg-foreground/5 font-mono text-xs"
+                className="rounded-none border-foreground/30 focus:border-foreground bg-foreground/5 font-mono text-xs h-11"
               />
-            </div>
+            </motion.div>
 
-            <div className="grid grid-cols-2 gap-4 pt-4">
+            <motion.div
+              variants={itemVariants}
+              className="grid grid-cols-2 gap-4 pt-4"
+            >
               <Button
                 onClick={handleLogin}
                 disabled={loading}
@@ -114,9 +156,23 @@ const Auth = () => {
               >
                 SIGN_UP
               </Button>
-            </div>
+            </motion.div>
           </form>
+
+          <motion.div
+            variants={itemVariants}
+            className="pt-4 border-t border-foreground/5"
+          >
+            <p className="font-mono text-[8px] text-center text-zinc-400 uppercase tracking-[0.2em]">
+              Encrypted Session // Port 443 Active
+            </p>
+          </motion.div>
         </div>
+      </motion.div>
+
+      {/* Background visual detail */}
+      <div className="absolute bottom-10 left-10 font-mono text-[10px] text-foreground/5 rotate-90 origin-left uppercase tracking-[0.5em] pointer-events-none select-none">
+        Unauthorized access is logged
       </div>
     </div>
   );

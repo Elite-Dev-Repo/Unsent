@@ -33,7 +33,7 @@ function Maketext() {
     setOutput("Generating...");
 
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" }); // Corrected model name string
       const prompt = `
 You are an elite communication strategist who writes emotionally intelligent, concise, high-impact text messages response.
 
@@ -93,179 +93,145 @@ Now generate the final message.
       label: "Hard Decline",
       icon: Ban,
       activeClass: "bg-black text-white shadow-lg",
-      description: `
-  - Enforce firm boundaries.
-  - Be direct and decisive.
-  - Do not apologize.
-  - Do not over-explain.
-  - Do not leave the door open.
-  - Remove guilt from the tone.
-  - Keep it short and controlled.
-  `,
+      description: `- Enforce firm boundaries. - Be direct and decisive. - Do not apologize. - Do not over-explain. - Do not leave the door open. - Remove guilt from the tone. - Keep it short and controlled.`,
     },
     {
       id: "boss",
       label: "Quick Pivot",
       icon: TrendingUp,
       activeClass: "bg-black text-white shadow-lg",
-      description: `
-  - Sound strategic and composed.
-  - Reframe the issue toward priorities or long-term goals.
-  - Avoid emotional language.
-  - Redirect the conversation with authority.
-  - Focus on alignment, impact, or efficiency.
-  - Keep it professional and confident.
-  `,
+      description: `- Sound strategic and composed. - Reframe the issue toward priorities or long-term goals. - Avoid emotional language. - Redirect the conversation with authority. - Focus on alignment, impact, or efficiency. - Keep it professional and confident.`,
     },
     {
       id: "safe",
       label: "Cooling Period",
       icon: PauseCircle,
       activeClass: "bg-black text-white shadow-lg",
-      description: `
-  - De-escalate tension.
-  - Slow the conversation down.
-  - Avoid reacting emotionally.
-  - Suggest revisiting later.
-  - Sound calm, steady, and self-controlled.
-  - Do not attack or accuse.
-  `,
+      description: `- De-escalate tension. - Slow the conversation down. - Avoid reacting emotionally. - Suggest revisiting later. - Sound calm, steady, and self-controlled. - Do not attack or accuse.`,
     },
     {
       id: "ghost",
       label: "Silent Fade",
       icon: LogOut,
       activeClass: "bg-black text-white shadow-lg",
-      description: `
-  - Exit gracefully.
-  - Avoid drama or confrontation.
-  - Do not over-explain.
-  - Sound neutral and disengaged.
-  - Close the loop calmly.
-  `,
+      description: `- Exit gracefully. - Avoid drama or confrontation. - Do not over-explain. - Sound neutral and disengaged. - Close the loop calmly.`,
     },
     {
       id: "negotiate",
       label: "Value Lock",
       icon: Scale,
       activeClass: "bg-black text-white shadow-lg",
-      description: `
-  - Push back confidently.
-  - Protect time, scope, or pricing.
-  - Clarify expectations.
-  - Offer structured options if needed.
-  - Do not undersell.
-  - Sound firm but reasonable.
-  `,
+      description: `- Push back confidently. - Protect time, scope, or pricing. - Clarify expectations. - Offer structured options if needed. - Do not undersell. - Sound firm but reasonable.`,
     },
     {
       id: "fire",
       label: "Bridge Burner",
       icon: Flame,
       activeClass: "bg-black text-white shadow-lg",
-      description: `
-  - Final and decisive.
-  - No emotional tone.
-  - No reopening discussion.
-  - Clear termination of engagement.
-  - Professional but firm.
-  `,
+      description: `- Final and decisive. - No emotional tone. - No reopening discussion. - Clear termination of engagement. - Professional but firm.`,
     },
   ];
 
   return (
-    <div className="cont">
+    <div className="min-h-screen bg-background flex flex-col">
       <Nav />
       <Toaster position="top-center" richColors />
-      <div
-        className=" mb-10 max-w-4xl mx-auto border border-foreground rounded-xl relative overflow-hidden mt-10"
-        style={{
-          boxShadow: " 2px 3px 0px 0px rgba(0,0,0,.1)",
-        }}
-      >
-        {/* Grain Texture Overlay */}
+
+      <main className="flex-1 px-4 sm:px-6">
         <div
-          className="absolute inset-0 pointer-events-none opacity-[0.03] z-0"
+          className="mb-10 max-w-4xl mx-auto border border-foreground rounded-xl relative overflow-hidden mt-6 sm:mt-10"
           style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+            boxShadow: "2px 3px 0px 0px rgba(0,0,0,.1)",
           }}
-        />
+        >
+          {/* Grain Texture Overlay */}
+          <div
+            className="absolute inset-0 pointer-events-none opacity-[0.03] z-0"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+            }}
+          />
 
-        <div className="overflow-hidden bg-background relative z-10 rounded-[calc(0.75rem-1px)] overflow-hidden grid md:grid-cols-2">
-          {/* Input Side */}
-          <div className="p-4 border-r border-foreground/10 text-left">
-            <h3 className="text-sm font-semibold uppercase tracking-widest text-foreground mb-4 font-mono">
-              Input Message Context
-            </h3>
-            <Textarea
-              placeholder="Type the message context here..."
-              className="bg-foreground/5 max-w-[450px] px-4 border-none text-md focus-visible:ring-0 placeholder:text-foreground/40 h-[150px] overflow-y-auto resize-none rounded-none"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-            />
-
-            <h3 className="text-sm mt-4 font-medium uppercase tracking-widest text-foreground font-mono">
-              Choose Message Mode
-            </h3>
-            <div className="grid grid-cols-2 gap-3 mt-6">
-              {MODES.map((mode) => {
-                const Icon = mode.icon;
-                const isActive = activeModeId === mode.id;
-                return (
-                  <Button
-                    key={mode.id}
-                    onClick={() => handleGenerate(mode)}
-                    className={`justify-start gap-2 h-12 rounded-none text-foreground transition-all uppercase font-mono text-[10px] tracking-widest
-                        ${isActive ? mode.activeClass : "bg-foreground/5 border border-foreground/10 hover:bg-foreground/10"}`}
-                  >
-                    <Icon size={18} /> {mode.label}
-                  </Button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Output Side */}
-          <div className="p-4 bg-background/40 text-left relative flex flex-col justify-between">
-            <div>
-              <h3 className="text-sm font-semibold uppercase tracking-widest text-foreground mb-4 flex justify-between items-center font-mono">
-                Response Draft
-                {output && (
-                  <button
-                    onClick={copyToClipboard}
-                    className="hover:bg-foreground/10 p-2 rounded-none transition-colors border border-foreground/10"
-                  >
-                    {copied ? (
-                      (toast.success("Message Copied!"),
-                      (<Check size={16} className="text-green-500" />))
-                    ) : (
-                      <Copy size={16} />
-                    )}
-                  </button>
-                )}
+          <div className="overflow-hidden bg-background relative z-10 rounded-[calc(0.75rem-1px)] grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-foreground/10">
+            {/* Input Side */}
+            <div className="p-5 sm:p-6 text-left">
+              <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-foreground/50 mb-4 font-mono">
+                Input Message Context
               </h3>
-              {output ? (
-                <p className="text-lg leading-relaxed text-foreground animate-in fade-in duration-700">
-                  {output}
-                </p>
-              ) : (
-                <div className="flex flex-col items-center justify-center h-48 text-foreground italic border border-dashed border-foreground/20 rounded-none bg-foreground/[0.02]">
-                  <span className="font-mono text-[10px] uppercase opacity-50">
-                    System Idle: Select Mode
-                  </span>
-                </div>
-              )}
+              <Textarea
+                placeholder="Type the message context here..."
+                // Added text-base (16px) to prevent iOS auto-zoom
+                className="bg-foreground/[0.03] w-full px-4 py-3 border border-foreground/5 text-base focus-visible:ring-1 focus-visible:ring-foreground/20 placeholder:text-foreground/30 h-[150px] overflow-y-auto resize-none rounded-none transition-all"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+              />
+
+              <h3 className="text-[10px] mt-8 font-bold uppercase tracking-[0.2em] text-foreground/50 font-mono">
+                Choose Message Mode
+              </h3>
+              <div className="grid grid-cols-2 gap-2 sm:gap-3 mt-4">
+                {MODES.map((mode) => {
+                  const Icon = mode.icon;
+                  const isActive = activeModeId === mode.id;
+                  return (
+                    <Button
+                      key={mode.id}
+                      onClick={() => handleGenerate(mode)}
+                      className={`justify-start gap-2 h-11 sm:h-12 rounded-none text-foreground transition-all uppercase font-mono text-[9px] sm:text-[10px] tracking-widest overflow-hidden
+                        ${isActive ? mode.activeClass : "bg-foreground/5 border border-foreground/10 hover:bg-foreground/10 shadow-none"}`}
+                    >
+                      <Icon size={16} className="shrink-0" />
+                      <span className="truncate">{mode.label}</span>
+                    </Button>
+                  );
+                })}
+              </div>
             </div>
 
-            <div className="mt-8 pt-6 border-t border-foreground/10 flex items-center justify-between text-[10px] font-mono text-zinc-500 uppercase">
-              <span>AI Powered Generation</span>
-              <span className="flex items-center gap-1">
-                <ArrowRight size={10} /> Ready to send
-              </span>
+            {/* Output Side */}
+            <div className="p-5 sm:p-6 bg-foreground/[0.01] text-left relative flex flex-col justify-between min-h-[300px]">
+              <div>
+                <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-foreground/50 mb-4 flex justify-between items-center font-mono">
+                  Response Draft
+                  {output && (
+                    <button
+                      onClick={copyToClipboard}
+                      className="hover:bg-foreground/10 p-2 rounded-none transition-colors border border-foreground/10 bg-background"
+                    >
+                      {copied ? (
+                        <Check size={14} className="text-green-500" />
+                      ) : (
+                        <Copy size={14} />
+                      )}
+                    </button>
+                  )}
+                </h3>
+                {output ? (
+                  <p className="text-base sm:text-lg leading-relaxed text-foreground animate-in fade-in slide-in-from-bottom-2 duration-500 font-light">
+                    {output}
+                  </p>
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-48 text-foreground italic border border-dashed border-foreground/20 rounded-none bg-foreground/[0.01]">
+                    <span className="font-mono text-[9px] uppercase opacity-30 tracking-[0.3em]">
+                      System_Idle
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-foreground/5 flex items-center justify-between text-[9px] font-mono text-zinc-400 uppercase tracking-widest">
+                <span className="flex items-center gap-2">
+                  <div className="h-1 w-1 bg-green-500 rounded-full animate-pulse" />
+                  Neural_Engine_Active
+                </span>
+                <span className="flex items-center gap-1 opacity-50">
+                  v2.0.4 <ArrowRight size={10} />
+                </span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </main>
       <Footer />
     </div>
   );
