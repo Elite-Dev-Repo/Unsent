@@ -198,8 +198,8 @@ Now generate the final message.
               Input Message Context
             </h3>
             <Textarea
-              placeholder="Type the vibe of your message here..."
-              className="bg-foreground/5 px-4 border-none text-xl focus-visible:ring-0 placeholder:text-foreground/40 h-[150px] overflow-y-auto resize-none rounded-none"
+              placeholder="Type the message context here..."
+              className="bg-foreground/5 max-w-[450px] px-4 border-none text-md focus-visible:ring-0 placeholder:text-foreground/40 h-[150px] overflow-y-auto resize-none rounded-none"
               value={input}
               onChange={(e) => setInput(e.target.value)}
             />
